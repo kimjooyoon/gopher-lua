@@ -1336,6 +1336,9 @@ func compileFunctionExpr(context *funcContext, funcexpr *ast.FunctionExpr, ec *e
 	context.Proto.Code = context.Code.List()
 	context.Proto.DbgSourcePositions = context.Code.PosList()
 	context.Proto.DbgUpvalues = context.Upvalues.Names()
+	if len(context.Proto.DbgUpvalues) > math.MaxUint8 {
+		raiseCompileError(context, context.Proto.LineDefined, "too many upvalues")
+	}
 	context.Proto.NumUpvalues = uint8(len(context.Proto.DbgUpvalues))
 	for _, clv := range context.Proto.Constants {
 		sv := ""
